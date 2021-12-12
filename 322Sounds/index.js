@@ -3,7 +3,8 @@
 -Key sounds will be shortened, slightly too long atm
 -*/ 
 let qwerty = "QWERASDFZXCV";//"QWERTYUIOPASDFGHJKLZXCVBNM";
-let font,fontsize = 32;
+let font,fontsize = 50;
+let button_length = 100;
 //button struct
 function button(color,letter,xpos,ypos){
     this.color = color;
@@ -25,28 +26,28 @@ function preload(){
     for(let i = 0;i < 6;i++){
         sounds[i] = loadSound(path+"/sound"+i+ext);
         if(i < 4){
-            buttons.push(new button([255,0,0],qwerty[i],20+(i%4)*80,20))
+            buttons.push(new button([255-(i%4)*20,0,0],qwerty[i],500+(i%4)*button_length,250))
         }
         else if(i < 8){
-            buttons.push(new button([0,255,0],qwerty[i],20+(i%4)*80,100))
+            buttons.push(new button([0,255-(i%4)*20,0],qwerty[i],500+(i%4)*button_length,350))
         }
     }
     font = loadFont("./ahronbd.ttf")
 }
 
 function setup() {
-    let cnv = createCanvas(1000, 500);
-    background(200);  
+    let cnv = createCanvas(10000, 10000);
+    background(255);  
     textFont(font);
     textSize(fontsize);
     textAlign(CENTER, CENTER);
 }
 
 function draw(){
-   background(200);
+   background(255);
    for(let i = 0;i < buttons.length;i++){
        //highlights button when hovered over
-       if(mouseX >= buttons[i].xpos && mouseX <= buttons[i].xpos+75 && mouseY >= buttons[i].ypos && mouseY <= buttons[i].ypos+75 && !buttons[i].pressed){
+       if(mouseX >= buttons[i].xpos && mouseX <= buttons[i].xpos+button_length && mouseY >= buttons[i].ypos && mouseY <= buttons[i].ypos+button_length && !buttons[i].pressed){
            buttons[i].color[2] = 255;
        }
        //sets highlight back to default unless its looping
@@ -64,9 +65,9 @@ function draw(){
        }
        //draws button at index i
        fill(buttons[i].color);
-       rect(buttons[i].xpos,buttons[i].ypos,75,75);
+       rect(buttons[i].xpos,buttons[i].ypos,button_length,button_length);
        fill(0)
-       text(buttons[i].letter,buttons[i].xpos+35,buttons[i].ypos+35);
+       text(buttons[i].letter,buttons[i].xpos+50,buttons[i].ypos+50);
    }
 }
 
@@ -80,7 +81,7 @@ function keyTyped(){
 
 function mousePressed(){
     for(let i = 0;i < buttons.length;i++){
-        if(mouseX >= buttons[i].xpos && mouseX <= buttons[i].xpos+75 && mouseY >= buttons[i].ypos && mouseY <= buttons[i].ypos+75){
+        if(mouseX >= buttons[i].xpos && mouseX <= buttons[i].xpos+button_length && mouseY >= buttons[i].ypos && mouseY <= buttons[i].ypos+button_length){
             //if a button is pressed already cut the loop
             if(buttons[i].pressed){
                 buttons[i].color[2] = 0;
