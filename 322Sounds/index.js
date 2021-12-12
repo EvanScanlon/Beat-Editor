@@ -20,16 +20,22 @@ let buttons = [];//Array for buttons
 let sounds = []; //Array to hold sounds
 let bar = [];
 let savedBar = [];
-for(let i = 0;i < 600;i++){
-    bar.push(-1);
-}
+let openMenu = false;
+
 //audio file extension + path for sounds folder
 const ext = ".wav";
 const path = "./sounds";
 
+function initializeBar(){
+    for(let i = 0;i < 600;i++){
+        bar.push(-1);
+    }
+}
+
 //preload occurs before setup or draw, fill array with sounds
 function preload(){
     soundFormats('wav');
+    initializeBar();
     for(let i = 0;i < 6;i++){
         sounds[i] = loadSound(path+"/sound"+i+ext);
         if(i < 4){
@@ -95,9 +101,13 @@ function draw(){
         rect(400+i,500,10,100);
         }
     }
+    if(openMenu){
+        displayMenu()
+    }
 }
 
 function clearBar(){
+    console.log("cleared: " + bar);
     for (let i = 0; i < bar.length; i++) {
         if(bar[i] != -1){
             buttons[bar[i]].pressed = false
@@ -106,8 +116,20 @@ function clearBar(){
     }
 }
 
-function saveBar(currentBar){ 
-    savedBar.push(currentBar)
+function saveBar(){ 
+    console.log("saved: " + bar);
+    savedBar.push(bar);
+}
+
+function displayMenu(){
+    for(let i = 0; i < savedBar.length; i++){
+        //create an option for each saved bar
+    }
+}
+
+function loadBar(){
+    console.log("loading: " + savedBar);
+    bar = savedBar[0];
 }
 
 function keyTyped(){
@@ -123,7 +145,12 @@ function keyPressed() {
         clearBar()
     }
     else if (keyCode === ENTER){
-        saveBar(bar)
+        saveBar()
+    }
+    else if (keyCode === SHIFT){
+        //openMenu = !openMenu
+        //displayMenu()
+        loadBar()
     }
   }
 
