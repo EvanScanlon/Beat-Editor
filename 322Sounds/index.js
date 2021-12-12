@@ -97,6 +97,9 @@ function draw(){
 
 function clearBar(){
     for (let i = 0; i < bar.length; i++) {
+        if(bar[i] != -1){
+            buttons[bar[i]].pressed = false
+        }
         bar[i] = -1;
     }
 }
