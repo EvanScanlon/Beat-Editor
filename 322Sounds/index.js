@@ -32,10 +32,10 @@ function preload(){
     for(let i = 0;i < 6;i++){
         sounds[i] = loadSound(path+"/sound"+i+ext);
         if(i < 4){
-            buttons.push(new button([255-(i%4)*20,0,0],qwerty[i],500+(i%4)*button_length,250))
+            buttons.push(new button([255-(i%4)*40,0,0],qwerty[i],500+(i%4)*button_length,250))
         }
         else if(i < 8){
-            buttons.push(new button([0,255-(i%4)*20,0],qwerty[i],500+(i%4)*button_length,350))
+            buttons.push(new button([0,255-(i%4)*40,0],qwerty[i],500+(i%4)*button_length,350))
         }
     }
     font = loadFont("./ahronbd.ttf")
@@ -52,6 +52,7 @@ function setup() {
 function draw(){ 
     background(255);
     counter++;
+    stroke(0);
     if(counter == 600) counter = 0;
     if(bar[counter] >= 0){
         sounds[bar[counter]].play();
@@ -76,7 +77,7 @@ function draw(){
        }
        //draws button at index i
        fill(buttons[i].color);
-       rect(buttons[i].xpos,buttons[i].ypos,button_length,button_length);
+       rect(buttons[i].xpos,buttons[i].ypos,button_length,button_length,15);
        fill(0)
        text(buttons[i].letter,buttons[i].xpos+50,buttons[i].ypos+50);
    }
@@ -122,6 +123,7 @@ function mousePressed(){
                 buttons[i].color[2] = 255;
                 buttons[i].pressed = true;
                 //sounds[i].loop();
+                sounds[i].play();
                 for(let j = counter;j < bar.length;j+= buttons[i].interval){
                     bar[j] = i;
                 }
