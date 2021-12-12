@@ -5,6 +5,7 @@
 let qwerty = "QWERASDFZXCV";//"QWERTYUIOPASDFGHJKLZXCVBNM";
 let font,fontsize = 50;
 let button_length = 100;
+let counter = 0;
 //button struct
 function button(color,letter,xpos,ypos){
     this.color = color;
@@ -13,9 +14,14 @@ function button(color,letter,xpos,ypos){
     this.letter = letter;
     this.pressed = false
     this.flashTime = 0;
+    this.interval = 10;
 }
 let buttons = [];//Array for buttons
 let sounds = []; //Array to hold sounds
+let bar = [];
+for(let i = 0;i < 500;i++){
+    bar.push(-1);
+}
 //audio file extension + path for sounds folder
 const ext = ".wav";
 const path = "./sounds";
@@ -43,9 +49,14 @@ function setup() {
     textAlign(CENTER, CENTER);
 }
 
-function draw(){
-   background(255);
-   for(let i = 0;i < buttons.length;i++){
+function draw(){ 
+    background(255);
+    counter++;
+    if(counter == 500) counter = 0;
+    if(bar[counter] >= 0){
+        sounds[bar[counter]].play();
+    }
+    for(let i = 0;i < buttons.length;i++){
        //highlights button when hovered over
        if(mouseX >= buttons[i].xpos && mouseX <= buttons[i].xpos+button_length && mouseY >= buttons[i].ypos && mouseY <= buttons[i].ypos+button_length && !buttons[i].pressed){
            buttons[i].color[2] = 255;
@@ -86,13 +97,21 @@ function mousePressed(){
             if(buttons[i].pressed){
                 buttons[i].color[2] = 0;
                 buttons[i].pressed = false;
-                sounds[i].stop();
+                //sounds[i].stop();
+                for(let j = 0;j < bar.length;j++){
+                    if(bar[j] == i){
+                        bar[j] = -1;
+                    } 
+                }
             }
             //if a button is pressed loop the sound
             else{
                 buttons[i].color[2] = 255;
                 buttons[i].pressed = true;
-                sounds[i].loop();
+                //sounds[i].loop();
+                for(let j = counter;j < bar.length;j+= buttons[i].interval){
+                    bar[j] = i;
+                }
             }
             
         }
