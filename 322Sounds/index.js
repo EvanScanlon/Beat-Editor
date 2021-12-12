@@ -19,6 +19,7 @@ function button(color,letter,xpos,ypos){
 let buttons = [];//Array for buttons
 let sounds = []; //Array to hold sounds
 let bar = [];
+let savedBar = [];
 for(let i = 0;i < 600;i++){
     bar.push(-1);
 }
@@ -105,6 +106,10 @@ function clearBar(){
     }
 }
 
+function saveBar(currentBar){ 
+    savedBar.push(currentBar)
+}
+
 function keyTyped(){
     //gets index of key pressed from qwerty sting and plays the sound
     let index = qwerty.indexOf(key.toUpperCase());
@@ -115,7 +120,10 @@ function keyTyped(){
 
 function keyPressed() {
     if (keyCode === BACKSPACE){
-      clearBar()
+        clearBar()
+    }
+    else if (keyCode === ENTER){
+        saveBar(bar)
     }
   }
 
