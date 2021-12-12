@@ -95,13 +95,25 @@ function draw(){
     }
 }
 
+function clearBar(){
+    for (let i = 0; i < bar.length; i++) {
+        bar[i] = -1;
+    }
+}
 
 function keyTyped(){
     //gets index of key pressed from qwerty sting and plays the sound
     let index = qwerty.indexOf(key.toUpperCase());
     sounds[index].play();
     buttons[index].flashTime=1;
+    bar[counter] = index;
 }
+
+function keyPressed() {
+    if (keyCode === BACKSPACE){
+      clearBar()
+    }
+  }
 
 function mousePressed(){
     for(let i = 0;i < buttons.length;i++){
