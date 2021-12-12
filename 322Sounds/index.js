@@ -14,12 +14,12 @@ function button(color,letter,xpos,ypos){
     this.letter = letter;
     this.pressed = false
     this.flashTime = 0;
-    this.interval = 10;
+    this.interval = 50;
 }
 let buttons = [];//Array for buttons
 let sounds = []; //Array to hold sounds
 let bar = [];
-for(let i = 0;i < 500;i++){
+for(let i = 0;i < 600;i++){
     bar.push(-1);
 }
 //audio file extension + path for sounds folder
@@ -52,7 +52,7 @@ function setup() {
 function draw(){ 
     background(255);
     counter++;
-    if(counter == 500) counter = 0;
+    if(counter == 600) counter = 0;
     if(bar[counter] >= 0){
         sounds[bar[counter]].play();
     }
@@ -80,6 +80,19 @@ function draw(){
        fill(0)
        text(buttons[i].letter,buttons[i].xpos+50,buttons[i].ypos+50);
    }
+   
+    fill(200);
+    rect(400,500,610,100);
+    fill(0);
+    rect(400+counter,500,10,100);
+    for(let i = 0;i < 600;i++){
+        if(bar[i] >= 0){
+        console.log(buttons[bar[i]].color);
+        //stroke(buttons[bar[i]].color)
+        fill(buttons[bar[i]].color);
+        rect(400+i,500,10,100);
+        }
+    }
 }
 
 
