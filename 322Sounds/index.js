@@ -49,7 +49,7 @@ function preload(){
 }
 
 function setup() {
-    let cnv = createCanvas(10000, 10000);
+    let cnv = createCanvas(2000, 1300);
     background(255);  
     textFont(font);
     textSize(fontsize);
