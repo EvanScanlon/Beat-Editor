@@ -19,16 +19,23 @@ function button(color,letter,xpos,ypos){
 let buttons = [];//Array for buttons
 let sounds = []; //Array to hold sounds
 let bar = [];
-for(let i = 0;i < 600;i++){
-    bar.push(-1);
-}
+let savedBar = [];
+let openMenu = false;
+
 //audio file extension + path for sounds folder
 const ext = ".wav";
 const path = "./sounds";
 
+function initializeBar(){
+    for(let i = 0;i < 600;i++){
+        bar.push(-1);
+    }
+}
+
 //preload occurs before setup or draw, fill array with sounds
 function preload(){
     soundFormats('wav');
+    initializeBar();
     for(let i = 0;i < 6;i++){
         sounds[i] = loadSound(path+"/sound"+i+ext);
         if(i < 4){
@@ -55,6 +62,7 @@ function draw(){
     stroke(0);
     if(counter == 600) counter = 0;
     if(bar[counter] >= 0){
+        console.log(bar[counter]);
         sounds[bar[counter]].play();
     }
     for(let i = 0;i < buttons.length;i++){
@@ -88,20 +96,44 @@ function draw(){
     rect(400+counter,500,10,100);
     for(let i = 0;i < 600;i++){
         if(bar[i] >= 0){
-        console.log(buttons[bar[i]].color);
-        //stroke(buttons[bar[i]].color)
         fill(buttons[bar[i]].color);
         rect(400+i,500,10,100);
         }
     }
+    if(openMenu){
+        displayMenu()
+    }
 }
 
 function clearBar(){
+    console.log("cleared: " + bar);
     for (let i = 0; i < bar.length; i++) {
         if(bar[i] != -1){
             buttons[bar[i]].pressed = false
         }
         bar[i] = -1;
+    }
+}
+
+function saveBar(){ 
+    savedBar.push(bar.slice(0));
+    console.log("saved: " + savedBar)
+}
+
+function displayMenu(){
+    for(let i = 0; i < savedBar.length; i++){
+        //create an option for each saved bar
+    }
+}
+
+function loadBar(){
+    console.log("loading: " + savedBar[0]);
+    bar = savedBar[0].slice(0);
+    for(let i = 0;i < bar.length;i++){
+        if(bar[i] != -1){
+            buttons[bar[i]].color[2] = 255;
+            buttons[bar[i]].pressed = true;
+        }
     }
 }
 
@@ -115,7 +147,15 @@ function keyTyped(){
 
 function keyPressed() {
     if (keyCode === BACKSPACE){
-      clearBar()
+        clearBar()
+    }
+    else if (keyCode === ENTER){
+        saveBar()
+    }
+    else if (keyCode === SHIFT){
+        //openMenu = !openMenu
+        //displayMenu()
+        loadBar()
     }
   }
 
@@ -147,4 +187,3 @@ function mousePressed(){
         }
     }
 }
-
