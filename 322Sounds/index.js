@@ -132,7 +132,6 @@ function loadBar(){
     for(let i = 0;i < bar.length;i++){
         if(bar[i] != -1){
             buttons[bar[i]].color[2] = 255;
-            buttons[bar[i]].pressed = true;
         }
     }
 }
