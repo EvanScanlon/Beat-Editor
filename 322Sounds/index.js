@@ -2,7 +2,7 @@
 -Basic functionality for pressing keys->playing sounds
 -Key sounds will be shortened, slightly too long atm
 -*/ 
-let qwerty = "QWERASDFZXCV";//"QWERTYUIOPASDFGHJKLZXCVBNM";
+let qwerty = "QWERTYASDFGZXCV";//"QWERTYUIOPASDFGHJKLZXCVBNM";
 let font,fontsize = 50;
 let button_length = 100;
 let counter = 0;
@@ -19,6 +19,8 @@ function button(color,letter,xpos,ypos){
 let buttons = [];//Array for buttons
 let sounds = []; //Array to hold sounds
 let bar = [];
+let metronome;
+let metronomeOn = false;
 let savedBar = [];
 let openMenu = false;
 
@@ -27,7 +29,7 @@ const ext = ".wav";
 const path = "./sounds";
 
 function initializeBar(){
-    for(let i = 0;i < 600;i++){
+    for(let i = 0;i < 144;i++){
         bar.push(-1);
     }
 }
@@ -35,21 +37,30 @@ function initializeBar(){
 //preload occurs before setup or draw, fill array with sounds
 function preload(){
     soundFormats('wav');
+    metronome = loadSound("./sounds/metronome.wav");
     initializeBar();
-    for(let i = 0;i < 6;i++){
+    for(let i = 0;i < 15;i++){
         sounds[i] = loadSound(path+"/sound"+i+ext);
-        if(i < 4){
-            buttons.push(new button([255-(i%4)*40,0,0],qwerty[i],500+(i%4)*button_length,250))
+        console.log(sounds[i]);
+        if(i < 6){
+            buttons.push(new button([255,i*20,0],qwerty[i],500+(i%6)*button_length,250))
         }
-        else if(i < 8){
-            buttons.push(new button([0,255-(i%4)*40,0],qwerty[i],500+(i%4)*button_length,350))
+        
+        else if(i < 11){
+            buttons.push(new button([i*20,255-(i),0],qwerty[i],500+(i%6)*button_length,350))
         }
+        else if(i < 15){
+            buttons.push(new button([255,i*15,0],qwerty[i],400+(i%5)*button_length,450))
+        }/*
+        else if(i < 16){
+            buttons.push(new button([255,255-(i%4)*40,0],qwerty[i],500+(i%4)*button_length,550))
+        }*/
     }
     font = loadFont("./ahronbd.ttf")
 }
 
 function setup() {
-    let cnv = createCanvas(2000, 1300);
+    let cnv = createCanvas(1500, 1000);
     background(255);  
     textFont(font);
     textSize(fontsize);
@@ -60,7 +71,16 @@ function draw(){
     background(255);
     counter++;
     stroke(0);
-    if(counter == 600) counter = 0;
+    //Counter max set to 288 as it represents the no. of iterations of draw() in 2 bars at 100bpm
+    if(counter == 288) counter = 0;
+    //2.4 seconds per bar at 100 bpm, draw() called approx 60 times per sec
+    if(counter % 36 == 0){
+        console.log('beat' + counter/144);
+        //Plays metronome on every beat if it has been activated with spacebar
+        if(metronomeOn){
+          metronome.play();
+        }
+    }
     if(bar[counter] >= 0){
         console.log(bar[counter]);
         sounds[bar[counter]].play();
@@ -91,13 +111,13 @@ function draw(){
    }
    
     fill(200);
-    rect(400,500,610,100);
+    rect(600,700,308,100);
     fill(0);
-    rect(400+counter,500,10,100);
-    for(let i = 0;i < 600;i++){
+    rect(600+counter,700,10,100);
+    for(let i = 0;i < 288;i++){
         if(bar[i] >= 0){
         fill(buttons[bar[i]].color);
-        rect(400+i,500,10,100);
+        rect(600+i,700,10,100);
         }
     }
     if(openMenu){
@@ -132,16 +152,20 @@ function loadBar(){
     for(let i = 0;i < bar.length;i++){
         if(bar[i] != -1){
             buttons[bar[i]].color[2] = 255;
+            buttons[bar[i]].pressed = true;
         }
     }
 }
 
 function keyTyped(){
     //gets index of key pressed from qwerty sting and plays the sound
+   
     let index = qwerty.indexOf(key.toUpperCase());
     sounds[index].play();
     buttons[index].flashTime=1;
     bar[counter] = index;
+
+    
 }
 
 function keyPressed() {
@@ -156,6 +180,10 @@ function keyPressed() {
         //displayMenu()
         loadBar()
     }
+    if(key==' '){
+        metronomeOn = !metronomeOn;
+    }
+    
   }
 
 function mousePressed(){
