@@ -13,6 +13,7 @@ function button(color, letter, xpos, ypos) {
     this.ypos = ypos;
     this.letter = letter;
     this.pressed = false
+    this.clicked = false
     this.flashTime = 0;
     this.interval = 50;
 }
@@ -140,7 +141,7 @@ function loadBar() {
     for (let i = 0; i < bar.length; i++) {
         if (bar[i] != -1) {
             buttons[bar[i]].color[2] = 255;
-            //buttons[bar[i]].pressed = true;
+            if(buttons[bar[i]].clicked == true)buttons[bar[i]].pressed = true;
         }
     }
 }
@@ -173,6 +174,7 @@ function mousePressed() {
             //if a button is pressed already cut the loop
             if (buttons[i].pressed) {
                 buttons[i].color[2] = 0;
+                buttons[i].clicked = false;
                 buttons[i].pressed = false;
                 //sounds[i].stop();
                 for (let j = 0; j < bar.length; j++) {
@@ -181,9 +183,10 @@ function mousePressed() {
                     }
                 }
             }
-            //if a button is pressed loop the sound
+            //if a button is clicked loop the sound
             else {
                 buttons[i].color[2] = 255;
+                buttons[i].clicked = true;
                 buttons[i].pressed = true;
                 //sounds[i].loop();
                 sounds[i].play();
