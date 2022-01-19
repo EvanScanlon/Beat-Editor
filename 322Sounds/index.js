@@ -6,6 +6,34 @@ let qwerty = "QWERTYASDFGZXCV";//"QWERTYUIOPASDFGHJKLZXCVBNM";
 let font, fontsize = 50;
 let button_length = 100;
 let counter = 0;
+let stepCounter = 0;
+let beats= [generateBeat(1,6,8,3),generateBeat(0,7,8,3),generateBeat(1,8,8,5)];
+function generateBeat(offset,sound,step,pulsesPerStep){
+    let bucket = 0;
+    let rhythm = [];
+    for(let i = 0;i < step;i++){
+        bucket += pulsesPerStep;
+        if(bucket >= step){
+            bucket = bucket - step;
+            rhythm.push(true);
+        }
+        else{
+            rhythm.push(false);
+        }
+    }
+    return {rhythm:rotateSeq(rhythm,offset),sound:sound,step:step};
+}
+
+function rotateSeq(seq, rotate){
+    var output = new Array(seq.length); //new array to store shifted rhythm
+    var val = seq.length - rotate;
+
+    for( var i=0; i < seq.length ; i++){
+        output[i] = seq[ Math.abs( (i+val) % seq.length) ];
+    }
+
+    return output;
+}
 //button struct
 function button(color, letter, xpos, ypos) {
     this.color = color;
@@ -67,9 +95,18 @@ function draw() {
     background(255);
     counter++;
     stroke(0);
+    if(counter % 18 == 0){
+        stepCounter++;
+        for(let i = 0;i < beats.length;i++){
+            let myBeat = beats[i];
+            console.log(myBeat.rhythm);
+            if(myBeat.rhythm[stepCounter%myBeat.step]){
+                sounds[myBeat.sound].play();
+            }
+        }
+    }
     if (counter == 288) counter = 0;
     if (bar[counter] >= 0) {
-        console.log(bar[counter]);
         sounds[bar[counter]].play();
     }
     for (let i = 0; i < buttons.length; i++) {
