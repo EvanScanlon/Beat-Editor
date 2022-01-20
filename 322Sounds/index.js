@@ -160,27 +160,40 @@ function drawSoundBar(){
 }
 
 function drawRhythm() {
+    let x = 1650;
+    let y = 450;
     let val = (beats.length+1)*150;
     let start = 0;
     let end = 22.5;
-    console.log(beats.length);
-    let layers = beats.length + 1;
-    for(let j = 0; j < layers; j++){ //j is which layer you're on
+    if(beats.length === 0){ //if no sounds are selected, default to step 16 on the innermost circle
         for (let i = 0; i <= 15; i++){ //i is which sector you're on
-            if((j == layers-1) && (stepCounter%beats[0].step == i))fill(0,0,0); //if we're on the innermost sector, draw black every step
-            else if((j == layers-1)){
+            if(stepCounter%16 == i)fill(0,0,0); //draw black every step
+            else {
+                console.log("here");
                 if(i%2==0)fill(250-20);
                 else fill(250-10);
             }
-            else if((beats[j].rhythm[stepCounter%beats[j].step]) && (stepCounter%beats[j].step == i)) fill(buttons[beats[j].sound].color[0],buttons[beats[j].sound].color[1],buttons[beats[j].sound].color[2]); //assigns the color of the associated button to the segment
-            else { //here we alternate between grey and lighter grey for segments
-                if(i%2==0)fill(250-20);
-                else fill(250-10);
-            }
-            arc(1700, 450, val-(150 * j), val-(150 * j), start + (22.5 * i), end + (22.5 * i));
+            arc(x, y, 150, 150, start + (22.5 * i), end + (22.5 * i));
         }
     }
-
+    else{
+        let layers = beats.length + 1; 
+        for(let j = 0; j < layers; j++){ //j is which layer you're on
+            for (let i = 0; i <= 15; i++){ //i is which sector you're on
+                if((j == layers-1) && (stepCounter%beats[0].step == i))fill(0,0,0); //if we're on the innermost sector, draw black every step
+                else if((j == layers-1)){
+                    if(i%2==0)fill(250-20);
+                    else fill(250-10);
+                }
+                else if((beats[j].rhythm[stepCounter%beats[j].step]) && (stepCounter%beats[j].step == i)) fill(buttons[beats[j].sound].color[0],buttons[beats[j].sound].color[1],buttons[beats[j].sound].color[2]); //assigns the color of the associated button to the segment
+                else { //here we alternate between grey and lighter grey for segments
+                    if(i%2==0)fill(250-20);
+                    else fill(250-10);
+                }
+                arc(x, y, val-(150 * j), val-(150 * j), start + (22.5 * i), end + (22.5 * i));
+            }
+        }
+    }
 }
 
 
