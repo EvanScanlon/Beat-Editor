@@ -7,7 +7,7 @@ let font, fontsize = 50;
 let button_length = 100;
 let counter = 0;
 let stepCounter = 0;
-let beats= [generateBeat(1,2,8,3),generateBeat(0,7,8,3),generateBeat(1,13,8,5)];
+let beats= [generateBeat(1,2,8,3),generateBeat(0,7,8,3),generateBeat(1,13,8,5),generateBeat(1,6,8,3)];
 function generateBeat(offset,sound,step,pulsesPerStep){
     let bucket = 0;
     let rhythm = [];
@@ -84,7 +84,7 @@ function preload() {
 }
 
 function setup() {
-    let cnv = createCanvas(2000, 1300);
+    let cnv = createCanvas(2200, 1300);
     background(255);
     textFont(font);
     textSize(fontsize);
@@ -164,13 +164,15 @@ function drawRhythm() {
     circle(1700, 450, 600);
     line(1700,150,1700,750);
     line(1400,450,2000,450);
-    let val = 600;
+    let val = 750;
     let start = 0;
     let end = 22.5;
-    for(let j = 0; j <=3; j++){ //j is which layer you're on
+    console.log(beats.length);
+    let layers = beats.length + 1;
+    for(let j = 0; j < layers; j++){ //j is which layer you're on
         for (let i = 0; i <= 15; i++){ //i is which sector you're on
-            if((j == 3) && (stepCounter%beats[0].step == i))fill(0,0,0); //if we're on the innermost sector, draw black every step
-            else if((j == 3)){
+            if((j == layers-1) && (stepCounter%beats[0].step == i))fill(0,0,0); //if we're on the innermost sector, draw black every step
+            else if((j == layers-1)){
                 if(i%2==0)fill(250-20);
                 else fill(250-10);
             }
