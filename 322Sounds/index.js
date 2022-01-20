@@ -7,12 +7,8 @@ let font, fontsize = 50;
 let button_length = 100;
 let counter = 0;
 let stepCounter = 0;
-<<<<<<< HEAD
-let beats = [];
-//let beats= [generateBeat(1,2,8,3),generateBeat(0,7,8,3),generateBeat(1,13,8,5),generateBeat(1,11,8,5)];
-=======
-let beats= [generateBeat(1,2,8,3),generateBeat(0,7,8,3),generateBeat(1,13,8,5),generateBeat(1,11,8,5)];
->>>>>>> origin
+let beats= [];
+let forms = document.getElementById("forms");
 function generateBeat(offset,sound,step,pulsesPerStep){
     let bucket = 0;
     let rhythm = [];
@@ -26,7 +22,7 @@ function generateBeat(offset,sound,step,pulsesPerStep){
             rhythm.push(false);
         }
     }
-    return {rhythm:rotateSeq(rhythm,offset),sound:sound,step:step};
+    return {rhythm:rotateSeq(rhythm,offset),sound:sound,step:step,pulsesPerStep:pulsesPerStep,offset:offset};
 }
 
 function rotateSeq(seq, rotate){
@@ -73,7 +69,7 @@ function preload() {
     initializeBar();
     for (let i = 0; i < 15; i++) {
         sounds[i] = loadSound(path + "/sound" + i + ext);
-        console.log(sounds[i]);
+        //console.log(sounds[i]);
         if (i < 6) {
             buttons.push(new button([255, i * 20, 0], qwerty[i], 500 + (i % 6) * button_length, 250))
         }
@@ -103,7 +99,7 @@ function draw() {
     stroke(0);
     playSounds();
     drawButtons();
-    drawSoundBar();
+    //drawSoundBar();
     drawRhythm();
 }
 
@@ -112,7 +108,7 @@ function playSounds(){
         stepCounter++;
         for(let i = 0;i < beats.length;i++){
             let myBeat = beats[i];
-            console.log(myBeat.rhythm);
+            //console.log(myBeat.rhythm);
             if(myBeat.rhythm[stepCounter%myBeat.step]){
                 sounds[myBeat.sound].play();
             }
@@ -165,6 +161,7 @@ function drawSoundBar(){
 }
 
 function drawRhythm() {
+    updateBeats();
     let x = 1650;
     let y = 450;
     let val = (beats.length+1)*150;
@@ -174,7 +171,7 @@ function drawRhythm() {
         for (let i = 0; i <= 15; i++){ //i is which sector you're on
             if(stepCounter%16 == i)fill(0,0,0); //draw black every step
             else {
-                console.log("here");
+                //console.log("here");
                 if(i%2==0)fill(250-20);
                 else fill(250-10);
             }
@@ -201,7 +198,30 @@ function drawRhythm() {
     }
 }
 
-
+function makeForms(){
+    document.getElementById("forms").innerHTML = "";
+    for(let i = 0;i < beats.length;i++){
+        let code = "<h2>Sound "+ qwerty[beats[i].sound]+ ":</h2> <form id='beat" + i + "'>";
+        code += "<label for='steps"+ i +"'>Steps: </label>";
+        code += "<input type='number' min='4' max='16' step='4' id='steps" + i + "'value='"+beats[i].rhythm.length + "'"+">";
+        code += "<label for='pulses"+ i +"'>Pulses: </label>";
+        code += "<input type='number' min='1' max='16' id='pulses" + i + "'value='"+beats[i].pulsesPerStep + "'"+">";
+        code += "<label for='offset"+ i +"'>Offset: </label>";
+        code += "<input type='number' min='0' max='16' id='offset" + i + "'value='"+beats[i].offset + "'"+">";
+        code += "</form>";
+        document.getElementById("forms").innerHTML += code;
+    }
+    
+}
+function updateBeats(){
+    for(let i = 0;i < beats.length;i++){
+        let step = parseInt(document.getElementById("steps"+i).value);
+        let pulses = parseInt(document.getElementById("pulses"+i).value);
+        let offset = parseInt(document.getElementById("offset"+i).value);
+        //console.log(generateBeat(offset,beats[i].sound,step,pulses));
+        beats[i] = generateBeat(offset,beats[i].sound,step,pulses);
+    }
+}
 function clearBar() {
     console.log("cleared: " + bar);
     for (let i = 0; i < bar.length; i++) {
@@ -264,6 +284,7 @@ function mousePressed() {
                 for(let j = 0;j < beats.length;j++){
                     if(i == beats[j].sound){
                         console.log(beats.splice(j,1));
+                        makeForms();
                     }
                 }
                 for (let j = 0; j < bar.length; j++) {
@@ -274,11 +295,19 @@ function mousePressed() {
             }
             //if a button is clicked loop the sound
             else {
-                buttons[i].color[2] = 255;
-                buttons[i].clicked = true;
-                buttons[i].pressed = true;
                 //sounds[i].loop();
-                beats.push(generateBeat(i%8,i,8,3))
+                if(beats.length < 5){
+                    buttons[i].color[2] = 255;
+                    buttons[i].clicked = true;
+                    buttons[i].pressed = true;
+                    beats.push(generateBeat(i%8,i,8,3));
+                    makeForms();
+                    // document.getElementById("forms").innerHTML += "<form id='beat" + i + "'>";
+                    // document.getElementById("beat"+i).innerHTML += "<input type='number' min='4' max='16' id='steps" + i + ">";
+                    // document.getElementById("beat"+i).innerHTML += "<input type='number' id='pulses" + i + ">";
+                    // document.getElementById("beat"+i).innerHTML += "<input type='number' id='offset" + i + ">";
+                }
+                
                 //sounds[i].play();
                 // for (let j = counter; j < bar.length; j += buttons[i].interval) {
                 //     bar[j] = i;
