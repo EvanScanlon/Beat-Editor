@@ -7,8 +7,12 @@ let font, fontsize = 50;
 let button_length = 100;
 let counter = 0;
 let stepCounter = 0;
+<<<<<<< HEAD
 let beats = [];
 //let beats= [generateBeat(1,2,8,3),generateBeat(0,7,8,3),generateBeat(1,13,8,5),generateBeat(1,11,8,5)];
+=======
+let beats= [generateBeat(1,2,8,3),generateBeat(0,7,8,3),generateBeat(1,13,8,5),generateBeat(1,11,8,5)];
+>>>>>>> origin
 function generateBeat(offset,sound,step,pulsesPerStep){
     let bucket = 0;
     let rhythm = [];
