@@ -71,22 +71,23 @@ function preload() {
         sounds[i] = loadSound(path + "/sound" + i + ext);
         //console.log(sounds[i]);
         if (i < 6) {
-            buttons.push(new button([255, i * 20, 0], qwerty[i], 500 + (i % 6) * button_length, 250))
+            buttons.push(new button([255, i * 20, 0], qwerty[i], 350 + (i % 6) * button_length, 200))
         }
 
         else if (i < 11) {
-            buttons.push(new button([i * 20, 255 - (i), 0], qwerty[i], 500 + (i % 6) * button_length, 350))
+            buttons.push(new button([i * 20, 255 - (i), 0], qwerty[i], 350 + (i % 6) * button_length, 300))
         }
         else if (i < 15) {
-            buttons.push(new button([255, i * 15, 0], qwerty[i], 400 + (i % 5) * button_length, 450))
+            buttons.push(new button([255, i * 15, 0], qwerty[i], 250 + (i % 5) * button_length, 400))
         }
     }
     font = loadFont("./ahronbd.ttf")
 }
 
 function setup() {
-    let cnv = createCanvas(2200, 1300);
-    background(255);
+    let cnv = createCanvas(2200, 600);
+    cnv.parent("canvas");
+    background(255,0,0);
     textFont(font);
     textSize(fontsize);
     textAlign(CENTER, CENTER);
@@ -94,7 +95,7 @@ function setup() {
 }
 
 function draw() {
-    background(255);
+    background(255,0,0);
     counter++;
     stroke(0);
     playSounds();
@@ -162,8 +163,8 @@ function drawSoundBar(){
 
 function drawRhythm() {
     updateBeats();
-    let x = 1650;
-    let y = 450;
+    let x = 1400;
+    let y = 350;
     let val = (beats.length+1)*150;
     let start = 0;
     let end = 22.5;
@@ -255,7 +256,7 @@ function keyTyped() {
     let index = qwerty.indexOf(key.toUpperCase());
     sounds[index].play();
     buttons[index].flashTime = 1;
-    bar[counter] = index;
+    //bar[counter] = index;
 }
 
 function keyPressed() {
