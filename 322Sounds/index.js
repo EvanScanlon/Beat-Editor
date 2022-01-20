@@ -7,7 +7,7 @@ let font, fontsize = 50;
 let button_length = 100;
 let counter = 0;
 let stepCounter = 0;
-let beats= [generateBeat(1,2,8,3),generateBeat(0,7,8,3),generateBeat(1,13,8,5),generateBeat(1,6,8,3)];
+let beats= [generateBeat(1,2,8,3),generateBeat(0,7,8,3),generateBeat(1,13,8,5),generateBeat(1,11,8,5)];
 function generateBeat(offset,sound,step,pulsesPerStep){
     let bucket = 0;
     let rhythm = [];
@@ -160,11 +160,7 @@ function drawSoundBar(){
 }
 
 function drawRhythm() {
-    fill(255,255,255);
-    circle(1700, 450, 600);
-    line(1700,150,1700,750);
-    line(1400,450,2000,450);
-    let val = 750;
+    let val = (beats.length+1)*150;
     let start = 0;
     let end = 22.5;
     console.log(beats.length);
