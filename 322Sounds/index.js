@@ -7,7 +7,7 @@ let font, fontsize = 50;
 let button_length = 100;
 let counter = 0;
 let stepCounter = 0;
-let beats= [generateBeat(1,6,8,3),generateBeat(0,7,8,3),generateBeat(1,8,8,5)];
+let beats= [generateBeat(1,2,8,3),generateBeat(0,7,8,3),generateBeat(1,13,8,5)];
 function generateBeat(offset,sound,step,pulsesPerStep){
     let bucket = 0;
     let rhythm = [];
@@ -89,12 +89,20 @@ function setup() {
     textFont(font);
     textSize(fontsize);
     textAlign(CENTER, CENTER);
+    angleMode(DEGREES);
 }
 
 function draw() {
     background(255);
     counter++;
     stroke(0);
+    playSounds();
+    drawButtons();
+    drawSoundBar();
+    drawRhythm();
+}
+
+function playSounds(){
     if(counter % 18 == 0){
         stepCounter++;
         for(let i = 0;i < beats.length;i++){
@@ -109,6 +117,9 @@ function draw() {
     if (bar[counter] >= 0) {
         sounds[bar[counter]].play();
     }
+}
+
+function drawButtons(){
     for (let i = 0; i < buttons.length; i++) {
         //highlights button when hovered over
         if (mouseX >= buttons[i].xpos && mouseX <= buttons[i].xpos + button_length && mouseY >= buttons[i].ypos && mouseY <= buttons[i].ypos + button_length && !buttons[i].pressed) {
@@ -133,21 +144,47 @@ function draw() {
         fill(0)
         text(buttons[i].letter, buttons[i].xpos + 50, buttons[i].ypos + 50);
     }
+}
 
+function drawSoundBar(){
     fill(200);
     rect(600, 600, 298, 100);
     fill(0);
     rect(600 + counter, 600, 10, 100);
     for (let i = 0; i < 288; i++) {
         if (bar[i] >= 0) {
-            fill(buttons[bar[i]].color);
+            if(beats)fill(buttons[bar[i]].color);
             rect(600 + i, 600, 10, 100);
         }
     }
-    if (openMenu) {
-        displayMenu()
-    }
 }
+
+function drawRhythm() {
+    fill(255,255,255);
+    circle(1700, 450, 600);
+    line(1700,150,1700,750);
+    line(1400,450,2000,450);
+    let val = 600;
+    let start = 0;
+    let end = 22.5;
+    for(let j = 0; j <=3; j++){ //j is which layer you're on
+        for (let i = 0; i <= 15; i++){ //i is which sector you're on
+            if((j == 3) && (stepCounter%beats[0].step == i))fill(0,0,0); //if we're on the innermost sector, draw black every step
+            else if((j == 3)){
+                if(i%2==0)fill(250-20);
+                else fill(250-10);
+            }
+            else if((beats[j].rhythm[stepCounter%beats[j].step]) && (stepCounter%beats[j].step == i)) fill(buttons[beats[j].sound].color[0],buttons[beats[j].sound].color[1],buttons[beats[j].sound].color[2]); //assigns the color of the associated button to the segment
+            else { //here we alternate between grey and lighter grey for segments
+                if(i%2==0)fill(250-20);
+                else fill(250-10);
+            }
+            arc(1700, 450, val-(150 * j), val-(150 * j), start + (22.5 * i), end + (22.5 * i));
+        }
+    }
+
+}
+
 
 function clearBar() {
     console.log("cleared: " + bar);
@@ -163,12 +200,6 @@ function saveBar() {
     savedBar.push(bar.slice(0));
     //savedButtons.push(buttons.slice(0));
     console.log("saved: " + savedButtons[0]);
-}
-
-function displayMenu() {
-    for (let i = 0; i < savedBar.length; i++) {
-        //create an option for each saved bar
-    }
 }
 
 function loadBar() {
