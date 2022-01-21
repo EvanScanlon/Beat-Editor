@@ -131,7 +131,7 @@ function playSounds(){
         stepCounter++;
         for(let i = 0;i < beats.length;i++){
             let myBeat = beats[i];
-            if(myBeat.rhythm[stepCounter%myBeat.step]){
+            if(myBeat.rhythm[stepCounter%16]){
                 sounds[myBeat.sound].play();
             }
         }
@@ -235,6 +235,16 @@ function updateBeats(){
     for(let i = 0;i < beats.length;i++){
         let step = parseInt(document.getElementById("steps"+i).value);
         //if(step == 12) step = 16;
+        if(step == 12){
+            if(beats[i].step == 8){
+                step = 16;
+                document.getElementById("steps"+i).value = 16;
+            }
+            else if(beats[i].step == 16){
+                step = 8;
+                document.getElementById("steps"+i).value = 8
+            }
+        }
         let pulses = parseInt(document.getElementById("pulses"+i).value);
         let offset = parseInt(document.getElementById("offset"+i).value);
         beats[i] = generateBeat(offset,beats[i].sound,step,pulses);
