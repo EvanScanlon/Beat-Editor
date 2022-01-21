@@ -177,32 +177,28 @@ function drawRhythm() {
     let val = (beats.length+1)*layerSize;
     let start = 0;
     let end = 22.5;
-    if(beats.length === 0){ //if no sounds are selected, default to step 16 on the innermost circle
+    let layers = beats.length + 1; 
+    for(let j = 0; j < layers; j++){ //j is which layer you're on
         for (let i = 0; i <= 15; i++){ //i is which sector you're on
-            if(stepCounter%16 == i)fill(0,0,0); //draw black every step
-            else {
+            if(beats.length === 0){
+                if(stepCounter%16 == i)fill(0,0,0); //draw black every step
+                else {
+                    if(i%2==0)fill(250-20);
+                    else fill(250-10);
+                    }
+                }
+            else if((j == layers-1) && (stepCounter%16 == i))fill(0,0,0); //if we're on the innermost sector, draw black every step
+            else if((j == layers-1)){
                 if(i%2==0)fill(250-20);
                 else fill(250-10);
             }
-            arc(x, y, layerSize, layerSize, start + (22.5 * i), end + (22.5 * i));
-        }
-    }
-    else{
-        let layers = beats.length + 1; 
-        for(let j = 0; j < layers; j++){ //j is which layer you're on
-            for (let i = 0; i <= 15; i++){ //i is which sector you're on
-                if((j == layers-1) && (stepCounter%16 == i))fill(0,0,0); //if we're on the innermost sector, draw black every step
-                else if((j == layers-1)){
-                    if(i%2==0)fill(250-20);
-                    else fill(250-10);
-                }
-                else if((beats[j].rhythm[stepCounter%beats[j].step]) && (stepCounter%16 == i)) fill(buttons[beats[j].sound].color[0],buttons[beats[j].sound].color[1],buttons[beats[j].sound].color[2]); //assigns the color of the associated button to the segment
-                else { //here we alternate between grey and lighter grey for segments
-                    if(i%2==0)fill(250-20);
-                    else fill(250-10);
-                }
-                arc(x, y, val-(layerSize * j), val-(layerSize * j), start + (22.5 * i), end + (22.5 * i));
+            else if((beats[j].rhythm[stepCounter%beats[j].step]) && (stepCounter%16 == i)) fill(buttons[beats[j].sound].color[0],buttons[beats[j].sound].color[1],buttons[beats[j].sound].color[2]); //assigns the color of the associated button to the segment
+            else if(beats[j].rhythm[i])fill(buttons[beats[j].sound].color[0],buttons[beats[j].sound].color[1],0); //assigns color to segment that has an upcoming pulse
+            else { //here we alternate between grey and lighter grey for segments
+                if(i%2==0)fill(250-20);
+                else fill(250-10);
             }
+            arc(x, y, val-(layerSize * j), val-(layerSize * j), start + (22.5 * i), end + (22.5 * i));
         }
     }
 }
@@ -221,14 +217,6 @@ function makeForms(){
         document.getElementById("forms").innerHTML += code;
     }
     
-}
-
-function getLargestStep(){
-    var largest = 0;
-    for(let i = 0; i < beats.length; i++){
-        if (beats[i].step > largest) largest = beats[i].step;
-    }
-    return largest;
 }
 
 function updateBeats(){
