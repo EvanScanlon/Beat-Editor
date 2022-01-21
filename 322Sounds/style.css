@@ -1,0 +1,17 @@
+body {
+    background-color: rgba(206, 206, 206);
+  }
+
+  h1 {
+    font-weight: bold;
+    color: rgb(0, 0, 0);
+    font-size: 32px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+  }
+  
+  h2 {
+    font-weight: bold;
+    color: rgb(0, 0, 0);
+    font-size: 24px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+  }
