@@ -22,6 +22,30 @@ function generateBeat(offset,sound,step,pulsesPerStep){
             rhythm.push(false);
         }
     }
+    if(step <= 8) {
+        for(let i = 0;i < step;i++){
+            bucket += pulsesPerStep;
+            if(bucket >= step){
+                bucket = bucket - step;
+                rhythm.push(true);
+            }
+            else{
+                rhythm.push(false);
+            }
+        }
+    }
+    if(step <= 4) {
+        for(let i = 0;i < step;i++){
+            bucket += pulsesPerStep;
+            if(bucket >= step){
+                bucket = bucket - step;
+                rhythm.push(true);
+            }
+            else{
+                rhythm.push(false);
+            }
+        }
+    }
     return {rhythm:rotateSeq(rhythm,offset),sound:sound,step:step,pulsesPerStep:pulsesPerStep,offset:offset};
 }
 
@@ -69,7 +93,6 @@ function preload() {
     initializeBar();
     for (let i = 0; i < 15; i++) {
         sounds[i] = loadSound(path + "/sound" + i + ext);
-        //console.log(sounds[i]);
         if (i < 6) {
             buttons.push(new button([255, i * 20, 0], qwerty[i], 350 + (i % 6) * button_length, 200))
         }
@@ -87,7 +110,7 @@ function preload() {
 function setup() {
     let cnv = createCanvas(2200, 600);
     cnv.parent("canvas");
-    background(255,0,0);
+    background(206, 206, 206);
     textFont(font);
     textSize(fontsize);
     textAlign(CENTER, CENTER);
@@ -95,12 +118,11 @@ function setup() {
 }
 
 function draw() {
-    background(255,0,0);
+    background(206, 206, 206);
     counter++;
     stroke(0);
     playSounds();
     drawButtons();
-    //drawSoundBar();
     drawRhythm();
 }
 
@@ -109,7 +131,6 @@ function playSounds(){
         stepCounter++;
         for(let i = 0;i < beats.length;i++){
             let myBeat = beats[i];
-            //console.log(myBeat.rhythm);
             if(myBeat.rhythm[stepCounter%myBeat.step]){
                 sounds[myBeat.sound].play();
             }
@@ -148,42 +169,29 @@ function drawButtons(){
     }
 }
 
-function drawSoundBar(){
-    fill(200);
-    rect(600, 600, 298, 100);
-    fill(0);
-    rect(600 + counter, 600, 10, 100);
-    for (let i = 0; i < 288; i++) {
-        if (bar[i] >= 0) {
-            if(beats)fill(buttons[bar[i]].color);
-            rect(600 + i, 600, 10, 100);
-        }
-    }
-}
-
 function drawRhythm() {
     updateBeats();
     let x = 1400;
-    let y = 350;
-    let val = (beats.length+1)*150;
+    let y = 300;
+    let layerSize = 100;
+    let val = (beats.length+1)*layerSize;
     let start = 0;
     let end = 22.5;
     if(beats.length === 0){ //if no sounds are selected, default to step 16 on the innermost circle
         for (let i = 0; i <= 15; i++){ //i is which sector you're on
             if(stepCounter%16 == i)fill(0,0,0); //draw black every step
             else {
-                //console.log("here");
                 if(i%2==0)fill(250-20);
                 else fill(250-10);
             }
-            arc(x, y, 150, 150, start + (22.5 * i), end + (22.5 * i));
+            arc(x, y, layerSize, layerSize, start + (22.5 * i), end + (22.5 * i));
         }
     }
     else{
         let layers = beats.length + 1; 
         for(let j = 0; j < layers; j++){ //j is which layer you're on
             for (let i = 0; i <= 15; i++){ //i is which sector you're on
-                if((j == layers-1) && (stepCounter%beats[0].step == i))fill(0,0,0); //if we're on the innermost sector, draw black every step
+                if((j == layers-1) && (stepCounter%getLargestStep() == i))fill(0,0,0); //if we're on the innermost sector, draw black every step
                 else if((j == layers-1)){
                     if(i%2==0)fill(250-20);
                     else fill(250-10);
@@ -193,7 +201,7 @@ function drawRhythm() {
                     if(i%2==0)fill(250-20);
                     else fill(250-10);
                 }
-                arc(x, y, val-(150 * j), val-(150 * j), start + (22.5 * i), end + (22.5 * i));
+                arc(x, y, val-(layerSize * j), val-(layerSize * j), start + (22.5 * i), end + (22.5 * i));
             }
         }
     }
@@ -214,40 +222,22 @@ function makeForms(){
     }
     
 }
+
+function getLargestStep(){
+    var largest = 0;
+    for(let i = 0; i < beats.length; i++){
+        if (beats[i].step > largest) largest = beats[i].step;
+    }
+    return largest;
+}
+
 function updateBeats(){
     for(let i = 0;i < beats.length;i++){
         let step = parseInt(document.getElementById("steps"+i).value);
+        //if(step == 12) step = 16;
         let pulses = parseInt(document.getElementById("pulses"+i).value);
         let offset = parseInt(document.getElementById("offset"+i).value);
-        //console.log(generateBeat(offset,beats[i].sound,step,pulses));
         beats[i] = generateBeat(offset,beats[i].sound,step,pulses);
-    }
-}
-function clearBar() {
-    console.log("cleared: " + bar);
-    for (let i = 0; i < bar.length; i++) {
-        if (bar[i] != -1) {
-            buttons[bar[i]].pressed = false
-        }
-        bar[i] = -1;
-    }
-}
-
-function saveBar() {
-    savedBar.push(bar.slice(0));
-    //savedButtons.push(buttons.slice(0));
-    console.log("saved: " + savedButtons[0]);
-}
-
-function loadBar() {
-    console.log("loading: " + savedBar[0]);
-    bar = savedBar[0].slice(0);
-    //buttons = savedButtons[0].slice(0);
-    for (let i = 0; i < bar.length; i++) {
-        if (bar[i] != -1) {
-            buttons[bar[i]].color[2] = 255;
-            if(buttons[bar[i]].clicked == true)buttons[bar[i]].pressed = true;
-        }
     }
 }
 
@@ -256,21 +246,6 @@ function keyTyped() {
     let index = qwerty.indexOf(key.toUpperCase());
     sounds[index].play();
     buttons[index].flashTime = 1;
-    //bar[counter] = index;
-}
-
-function keyPressed() {
-    if (keyCode === BACKSPACE) {
-        clearBar()
-    }
-    else if (keyCode === ENTER) {
-        saveBar()
-    }
-    else if (keyCode === SHIFT) {
-        //openMenu = !openMenu
-        //displayMenu()
-        loadBar()
-    }
 }
 
 function mousePressed() {
@@ -281,7 +256,6 @@ function mousePressed() {
                 buttons[i].color[2] = 0;
                 buttons[i].clicked = false;
                 buttons[i].pressed = false;
-                //sounds[i].stop();
                 for(let j = 0;j < beats.length;j++){
                     if(i == beats[j].sound){
                         console.log(beats.splice(j,1));
@@ -296,23 +270,13 @@ function mousePressed() {
             }
             //if a button is clicked loop the sound
             else {
-                //sounds[i].loop();
                 if(beats.length < 5){
                     buttons[i].color[2] = 255;
                     buttons[i].clicked = true;
                     buttons[i].pressed = true;
                     beats.push(generateBeat(i%8,i,8,3));
                     makeForms();
-                    // document.getElementById("forms").innerHTML += "<form id='beat" + i + "'>";
-                    // document.getElementById("beat"+i).innerHTML += "<input type='number' min='4' max='16' id='steps" + i + ">";
-                    // document.getElementById("beat"+i).innerHTML += "<input type='number' id='pulses" + i + ">";
-                    // document.getElementById("beat"+i).innerHTML += "<input type='number' id='offset" + i + ">";
                 }
-                
-                //sounds[i].play();
-                // for (let j = counter; j < bar.length; j += buttons[i].interval) {
-                //     bar[j] = i;
-                // }
             }
 
         }
