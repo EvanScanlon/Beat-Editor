@@ -180,14 +180,7 @@ function drawRhythm() {
     let layers = beats.length + 1; 
     for(let j = 0; j < layers; j++){ //j is which layer you're on
         for (let i = 0; i <= 15; i++){ //i is which sector you're on
-            if(beats.length === 0){
-                if(stepCounter%16 == i)fill(0,0,0); //draw black every step
-                else {
-                    if(i%2==0)fill(250-20);
-                    else fill(250-10);
-                    }
-                }
-            else if((j == layers-1) && (stepCounter%16 == i))fill(0,0,0); //if we're on the innermost sector, draw black every step
+            if((j == layers-1) && (stepCounter%16 == i))fill(0,0,0); //if we're on the innermost sector, draw black every step
             else if((j == layers-1)){
                 if(i%2==0)fill(250-20);
                 else fill(250-10);
